@@ -205,13 +205,25 @@ JWT_AUTH = {
 }
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
-EMAIL_SUBJECT_PREFIX = "[Topplaysport]"
+EMAIL_SUBJECT_PREFIX = "[Topsport]"
 
 # Crispy forms
 CRISPY_TEMPLATE_PACK = env('TEMPLATE_PACK', default="bootstrap4")
 
-EMAIL_USE_TLS = env('MAIL_USE_TLS')
-EMAIL_HOST = env('MAIL_HOST')
-EMAIL_HOST_USER = env('MAIL_USER')
-EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
-EMAIL_PORT = env('MAIL_PORT')
+#smtp configuration
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_TLS = env('MAIL_USE_TLS')
+# EMAIL_HOST = env('MAIL_HOST')
+# EMAIL_HOST_USER = env('MAIL_USER')
+# EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
+# EMAIL_PORT = env('MAIL_PORT')
+
+#smtp configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'njoagwuanidavid@gmail.com'
+EMAIL_HOST_PASSWORD = 'pastorchris'
+
+

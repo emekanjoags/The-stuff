@@ -1,7 +1,8 @@
 from .base import *
 
-ALLOWED_HOSTS = ['www.topplaysport.com', 'topplaysport.com', '54.208.188.177', '172.31.85.157', '3.225.117.198',
-                 'toplaybalance-310072501.us-east-1.elb.amazonaws.com', '54.174.195.74']
+# ALLOWED_HOSTS = ['www.topplaysport.com', 'topplaysport.com', '54.208.188.177', '172.31.85.157', '3.225.117.198',
+#                  'toplaybalance-310072501.us-east-1.elb.amazonaws.com', '54.174.195.74']
+ALLOWED_HOST =  []
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 #
@@ -63,9 +64,9 @@ LOGGING = {
     },
 }
 
-ADMINS = [('Confi', 'sudouser1443@gmail.com')]
+ADMINS = [('David', 'njoagwuanidavid@gmail.com')]
 
-DEFAULT_FROM_EMAIL = "sudouser1443@gmail.com"
+DEFAULT_FROM_EMAIL = "njoagwuanidavid@gmail.com"
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = DEFAULT_FROM_EMAIL

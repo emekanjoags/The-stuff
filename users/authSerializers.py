@@ -12,6 +12,7 @@ from account.models import Wallet
 from core.models import GameSetting
 from referral.models import Referral
 from utilities.helper import Mailer, Helper
+from utilities.mailing import Mailer
 from utilities.referral_gen import ReferralTokenGenerator
 from utilities.site_details import get_site_details
 from .models import User
@@ -75,6 +76,8 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         instance.save()
         print('instance created')
 
+        instance.profile_image.save(image[0], image[1], save=True)
+
         #this code is to give a new user a random logo
         # try:
         #     instance.profile_image.save(image[0], image[1], save=True)
@@ -86,7 +89,7 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
 
             Referral.objects.create(referrer=referrer, user=instance)
             print('referral object created')
-            #helpers.send_referrer_msg(referrer, instance.username)
+            helpers.send_referrer_msg(referrer, instance.username)
 
         # create wallet for the user after account details has been completed
         print('yea')
@@ -101,7 +104,7 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         #         wallet.save(update_fields=('bonus_balance',))
 
         # send email to the user for successful registration
-        # helpers.send_first_time_mail(instance.email, instance.username)
+        helpers.send_first_time_mail(instance.email, instance.username)
 
         return instance
 

@@ -70,6 +70,8 @@ class Helper:
         response = requests.get(img_url)
         if response.status_code == 200:
             return name, ContentFile(response.content)
+        else:
+            print('it didnt work')
         return ()
 
 

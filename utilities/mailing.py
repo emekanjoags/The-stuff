@@ -17,13 +17,15 @@ class Mailer:
 
     def send_first_time_mail(self, email, username):
         message = render_to_string('mails/auth/register_success.html', {'username': username})
-        subject = 'David from Topplaysport Checking in'
+        subject = 'David from Topsport Checking in'
 
         mail_subject = subject
         to_email = email
         raw_message = strip_tags(message)
-        from_email = 'Topplaysport <noreply@topplaysport.com>'
+        from_email = 'Topsport <noreply@topplaysport.com>'
+        print('i got here')
         mail.send_mail(mail_subject, raw_message, from_email, [to_email], html_message=message)
+        print('here too')
 
     def send_winning_msg(self, user):
         message = render_to_string('mails/bets/win.html')

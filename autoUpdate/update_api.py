@@ -9,6 +9,7 @@ from account.models import Wallet, Withdrawal
 from stack.models import ActiveGame, Match, Slip, Game, RafflePlayer, WeekEndRaffle, RaffleWinners
 from users.models import User
 from utilities.helper import WinnersSort, Mailer
+from utilities.mailing import  Mailer
 from django.utils import timezone, dateparse
 from paystackpy import Transaction, Transfer
 from trivia.models import Limit
@@ -143,7 +144,7 @@ class UpdateApi:
                         #         amount_to_receive_in_tense = sotter.amount_to_tens(
                         #             len(group)) * 200
 
-                        # mailer = Mailer()
+                        mailer = Mailer()
 
                         if space_available >= len(
                                 group) and space_available > 0 and amount_available >= amount_to_receive_in_tense:
@@ -174,7 +175,8 @@ class UpdateApi:
                                     user_wallet.save(
                                         update_fields=('balance',))
 
-                                    # mailer.send_winning_msg(user_slip.user)
+                                    #mail here
+                                    mailer.send_winning_msg(user_slip.user)
 
                         elif space_available > 0 and len(group) > space_available and amount_available > 1:
                             # print("SPACE TWO: {}".format(group[0]['score']))
@@ -204,7 +206,8 @@ class UpdateApi:
                                     user_wallet.save(
                                         update_fields=('balance',))
 
-                                    # mailer.send_winning_msg(user_slip.user)
+                                    #mail here
+                                    mailer.send_winning_msg(user_slip.user)
 
                     # mailer = Mailer()
                     # # mailer.send_my_mail(amount_used)
@@ -287,9 +290,10 @@ class UpdateApi:
                                     wallet.bonus_balance = F(
                                         'bonus_balance') + 200
                                     wallet.save()
-
-                                # mailer = Mailer()
-                                # mailer.send_raffle_player(user, raffle_id)
+                                    
+                                #mail here
+                                mailer = Mailer()
+                                mailer.send_raffle_player(user, raffle_id)
 
     def end_raffle_draw(self):
         week_day = timezone.now().weekday()
@@ -364,8 +368,9 @@ class UpdateApi:
 
                     if not selection.user.is_moderator:
                         user = User.objects.get(selection.user.pk)
-                        # mailer = Mailer()
-                        # mailer.send_raffle_winner(user)
+                        #mail here
+                        mailer = Mailer()
+                        mailer.send_raffle_winner(user)
                         user_wallet = Wallet.objects.get(user=user.pk)
                         user_wallet.balance = F('balance') + 1000
                         user_wallet.save(update_fields=('balance',))
