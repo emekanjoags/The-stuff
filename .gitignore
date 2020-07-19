@@ -5,7 +5,7 @@ public/js/bundle.js
 public/css/style.css
 public/css/app.css
 public/css/core/*
-.env
+
 .env.prod
 .idea/
 assets/uploads/profile/*
