@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'support',
     'referral',
     'trivia',
+
+    #s3 config apps
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -227,3 +230,23 @@ EMAIL_HOST_USER = 'njoagwuanidavid@gmail.com'
 EMAIL_HOST_PASSWORD = 'pastorchris'
 
 
+# #AWS S3 CONFIG
+# AWS_ACCESS_KEY_ID = 'AKIAREJUIHRDJQAXPQSP'
+# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_STORAGE_BUCKET_NAME = 'topsport-test-bucket'
+# AWS_S3_FILE_OVERWRITE = False
+# AWS_DEFAULT_ACL = None
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# <?xml version="1.0" encoding="UTF-8"?>
+# <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+#   <CORSRule>
+#     <AllowedOrigin>https://example.org</AllowedOrigin>
+#     <AllowedMethod>HEAD</AllowedMethod>
+#     <AllowedMethod>GET</AllowedMethod>
+#     <AllowedMethod>PUT</AllowedMethod>
+#     <AllowedMethod>POST</AllowedMethod>
+#     <AllowedMethod>DELETE</AllowedMethod>
+#     <AllowedHeader>*</AllowedHeader>
+#   </CORSRule>
+# </CORSConfiguration>

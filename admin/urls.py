@@ -7,7 +7,7 @@ from .views import (dashboard, TeamsView, delete_team_view, EventsView, delete_e
                     games_creation_view, game_matches_view, redirect_after_match_update, ImagesView, add_slider_image,
                     remove_slider_image, UsersView, delete_slider_image, game_edit_view, GamesSetting, user_games_view,
                     user_bet_slip, change_user_status, support_view, SupportResponse, SendMessage, game_delete_view,
-                    CreditUserAccount, QualifiedPlayers)
+                    CreditUserAccount, QualifiedPlayers, paidUsers, payUser)
 
 admin_auth_decorator = decorator_from_middleware(AdminCheckMiddleware)
 app_name = 'myadmin'
@@ -41,4 +41,6 @@ urlpatterns = [
     path('messages', admin_auth_decorator(SendMessage.as_view()), name='message'),
     path('users/credit-account', admin_auth_decorator(CreditUserAccount.as_view()), name='credit_user_account'),
     path('qualified-players', admin_auth_decorator(QualifiedPlayers.as_view()), name='qualified_players'),
+    path('deposit', paidUsers, name="deposit"),
+    path('user/payuser/<int:pk>', admin_auth_decorator(payUser), name='pay-user')
 ]

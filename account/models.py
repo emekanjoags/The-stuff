@@ -43,3 +43,13 @@ class Authorization(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, db_index=True)
     bank = models.CharField(max_length=200)
     last4 = models.CharField(max_length=10)
+
+class ManualDeposit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.IntegerField(blank=True, null=True)
+    sender = models.CharField(max_length=200, blank=True, null=True)
+    timePaid = models.DateTimeField(auto_now_add=True, null=True)
+    settled = models.BooleanField(default=False, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username

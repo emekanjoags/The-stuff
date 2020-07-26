@@ -56,7 +56,7 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         int_rand = randint(1, 19)
         img_url = 'http://{}/static/images/logos/teams/team-{}.png'.format(get_site_details.get_site_url(), randint(1, 19))
         # print("IMAGE THINGS: {}".format(img_url))
-        image = helper_func.urls_image_upload(img_url)
+        # image = helper_func.urls_image_upload(img_url)
 
         instance.username = validated_data.get('username')
         instance.email = validated_data.get('email')
@@ -76,14 +76,9 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         instance.save()
         print('instance created')
 
-        instance.profile_image.save(image[0], image[1], save=True)
+        # instance.profile_image.save(image[0], image[1], save=True)
 
-        #this code is to give a new user a random logo
-        # try:
-        #     instance.profile_image.save(image[0], image[1], save=True)
-        # except:
-        #     pass
-
+        
         if instance.referred:
             referrer = User.objects.get(referral_code=validated_data.get('referral_code').lower())
 

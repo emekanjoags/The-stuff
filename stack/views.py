@@ -31,6 +31,9 @@ from utilities.helper import Helper
 helpers = Helper()
 
 
+
+
+
 class EventsApiView(generics.ListAPIView):
     queryset = Event.objects.all().order_by('-id')
     permission_classes = (permissions.IsAdminUser,)

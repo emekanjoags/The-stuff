@@ -9,11 +9,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Sum
 
-from account.models import Wallet, Deposit, Withdrawal, Authorization
+from account.models import Wallet, Deposit, Withdrawal, Authorization, ManualDeposit
 from referral.models import Referral
 from users.models import User
 from utilities.helper import LargeResultsSetPagination, Mailer
-from .accountsSerializers import DepositSerializer, WithdrawalSerializer, WalletSerializer, AuthorizationSerializer
+from .accountsSerializers import DepositSerializer, WithdrawalSerializer, WalletSerializer, AuthorizationSerializer, ManualDepositSerializer
 
 
 class WithdrawalView(View):
@@ -57,6 +57,25 @@ class Deposits(generics.ListAPIView):
 
     def get_queryset(self):
         return Deposit.objects.filter(wallet__user=self.request.user.pk).order_by('-id')
+
+class manualDeposit(View):
+    def get(self, request):
+        return render(request, 'account/manual-deposit.html')
+
+class ManualDepositApi(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request):
+        data = request.data
+        print('data: ', data)
+        sender = data.get('sender')
+        amount = data.get('amount')
+        print('sender: ', sender)
+        ManualDeposit.objects.create(user=request.user, sender=sender,
+        amount=amount)
+        return Response(
+            data={'response': 'Payment succesful, your payment will be processed shortly'},
+            status=status.HTTP_200_OK)
 
 
 class AuthorizationsList(generics.ListAPIView):

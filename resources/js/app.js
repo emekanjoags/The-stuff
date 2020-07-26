@@ -24,6 +24,7 @@ Vue.component('gravatar-selection', require('./components/profile/gravatar-uploa
 
 Vue.component('account-details', require('./components/account/index.vue').default);
 Vue.component('make-withdrawals', require('./components/account/make-withdrawals.vue').default);
+Vue.component('manual-deposit', require('./components/account/manual-deposit.vue').default);
 
 Vue.component('watch-raffle-btn', require('./components/raffle/watch-raffle-btn.vue').default);
 Vue.component('raffle-winners', require('./components/raffle/raffle-winners.vue').default);

@@ -141,3 +141,5 @@ class RafflePlayer(models.Model):
 class RaffleWinners(models.Model):
     user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE, related_name='raffle_winner')
     created_at = models.DateTimeField(auto_now_add=True)
+
+

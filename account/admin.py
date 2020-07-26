@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, re_path
 from django.utils.html import format_html
 
-from .models import Wallet, Deposit, Withdrawal
+from .models import Wallet, Deposit, Withdrawal, ManualDeposit
 
 
 class WalletAdmin(admin.ModelAdmin):
@@ -26,3 +26,4 @@ class WalletAdmin(admin.ModelAdmin):
 admin.site.register(Wallet, WalletAdmin)
 admin.site.register(Deposit)
 admin.site.register(Withdrawal)
+admin.site.register(ManualDeposit)

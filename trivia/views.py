@@ -221,7 +221,18 @@ def entry_view(request, pk):
         elif entry.penaltya == False:
             pen_entry ='NO'
 
+        if entry.question.penalty == True:
+            ques_pen = 'Yes'
+        elif entry.question.penalty == False:
+            ques_pen = 'No'
+
     except Attempt.DoesNotExist:
         raise Http404
 
-    return render(request, 'trivia/entry.html', {'entry': entry, 'pen_entry':pen_entry})
+    context = {
+        'entry': entry,
+        'pen_entry':pen_entry,
+        'ques_pen':ques_pen
+    }
+
+    return render(request, 'trivia/entry.html', context)

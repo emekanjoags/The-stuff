@@ -39,9 +39,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="#000321">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <meta name="keywords"
-          content="Topplaysport rewarding top players, lottery, sport, soccer, gaming, prediction, gambling, football, topplaysport, money, cash, bonus, referral, Topplaysport is a competitive soccer prediction site">
+          content="Topsport rewarding top players, lottery, sport, soccer, gaming, prediction, gambling, football, topplaysport, money, cash, bonus, referral, Topplaysport is a competitive soccer prediction site">
     <meta name="description"
-          content="Topplaysport is a competitive soccer prediction site where participants compete against themselves for a share in guaranteed 100,000 naira daily cash reward. They do this by predicting the outcome of 10 soccer games, with each correct prediction having a value of four (4) points, so a correct prediction in all 10 games results in 40points. The Top ten users with the highest point for the day get to have a share in the 100,000 naira daily cash reward.">
+          content="Topsport is a competitive soccer prediction site where participants compete against themselves for a share in guaranteed 40,000 naira daily cash reward. They do this by predicting the outcome of 10 soccer games, with each correct prediction having a value of four (4) points, so a correct prediction in all 10 games results in 40points. The Top ten users with the highest point for the day get to have a share in the 100,000 naira daily cash reward.">
     <meta name="author" content="{% site_name %}">
     <meta name="robot" content="index, follow">
     <meta name="copyright" content="Copyright © {% now "Y" %} {% site_name %}. All Rights Reserved.">
@@ -51,7 +51,7 @@
     <meta property="og:image:type" content="image/png"/>
     {% if ref %}
         <meta property="og:description"
-              content="Come and join me and earn some cool cash on Topplaysport.com. Register with referral code: {{ ref }}"/>
+              content="Come and join me and earn some cool cash on Topsport.com. Register with referral code: {{ ref }}"/>
         <meta property="og:title" content="Want to be the next winner?"/>
         <meta property="og:url"
               content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ request.get_absolute_url }}/ref/{{ ref }}"/>
@@ -59,15 +59,15 @@
         <meta property="og:url"
               content="{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{{ request.get_absolute_url }}"/>
         <meta property="og:description"
-              content="Topplaysport is a competitive soccer prediction site where participants compete against themselves for a share in guaranteed 100,000 naira daily cash reward. They do this by predicting the outcome of 10 soccer games, with each correct prediction having a value of four (4) points, so a correct prediction in all 10 games results in 40points. The Top ten users with the highest point for the day get to have a share in the 100,000 naira daily cash reward."/>
-        <meta property="og:title" content="Topplaysports rewarding top players"/>
+              content="Topsport is a competitive soccer prediction site where participants compete against themselves for a share in guaranteed 40,000 naira daily cash reward. They do this by predicting the outcome of 10 soccer games, with each correct prediction having a value of four (4) points, so a correct prediction in all 10 games results in 40points. The Top ten users with the highest point for the day get to have a share in the 100,000 naira daily cash reward."/>
+        <meta property="og:title" content="Topsport rewarding top players"/>
     {% endif %}
     <meta property="fb:app_id" content=""/>
     <meta property="og:site_name" content="{% site_name %}"/>
     <meta property="og:type" content="website"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <title>{% block page_title %} Welcome{% endblock %}</title>
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="icon" href="{% static 'images/logos/favicon.ico' %}" type="image/x-icon"/>
     <link href="//fonts.googleapis.com/css?family=Kanit:300,400,500,500i,600%7CRoboto:400,900" rel="stylesheet"
           type="text/css">
     <link href="{% static 'css/app.css' %}" rel="stylesheet" type="text/css" media="all">
@@ -123,7 +123,7 @@
                         <button class="rd-navbar-toggle" data-rd-navbar-toggle=".rd-navbar-main"><span></span></button>
                         <div class="rd-navbar-logo-secret md-query-mobile-h">
                             <a href="/">
-                                <img src="{% static 'images/logos/logo-text.png' %}" alt=""/>
+                                <img src="{% static 'images/logos/topsport logo-me.png' %}" alt=""/>
                             </a>
 
                         </div>
@@ -188,11 +188,11 @@
                             <div class="rd-navbar-main-container container">
                                 <!-- RD Navbar Brand-->
                                 <div class="rd-navbar-brand"><a class="brand" href="{% url 'HomePage' %}">
-                                    <img class="brand-logo md-query-pc-h" src="{% static 'images/logo-default.png' %}"
+                                    <img class="brand-logo md-query-pc-h" src="{% static 'images/logos/topsport logo-me.png' %}"
                                          alt=""
                                          width="107" height="41"/>
                                     <img class="brand-logo md-query-mobile-h"
-                                         src="{% static 'images/logos/logo-75x75.png' %}"/>
+                                         src="{% static 'images/logos/topsport logo-image-me.png' %}"/>
                                 </a>
                                 </div>
                                 <!-- RD Navbar Search-->

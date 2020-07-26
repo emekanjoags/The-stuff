@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from account.models import Deposit, Withdrawal, Wallet, Authorization
+from account.models import Deposit, Withdrawal, Wallet, Authorization, ManualDeposit
 
 
 class DepositSerializer(serializers.ModelSerializer):
@@ -40,4 +40,9 @@ class WalletSerializer(serializers.ModelSerializer):
 class AuthorizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Authorization
+        fields = '__all__'
+
+class ManualDepositSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ManualDeposit
         fields = '__all__'

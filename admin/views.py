@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, reverse, redirect
 from django.utils import timezone
 from django.utils.decorators import decorator_from_middleware
 
-from account.models import Wallet
+from account.models import Wallet, ManualDeposit
 from utilities.site_details import get_site_details
 from core.models import Slider, GameSetting
 from support.models import Support
@@ -15,12 +15,41 @@ from .middleware import AdminCheckMiddleware
 from users.models import User
 from stack.models import Slip, ActiveGame, Team, Event, Match, Game, WeekEndRaffle, RafflePlayer
 from django.views import View
+from account.models import ManualDeposit, Deposit
 from .forms import TeamCreationForm, EventCreationForm, ImageForm, AddUserForm, GamesSettingForm
 from django.contrib import messages
 from django.db.models import Sum
 
 helper_func = Helper()
 
+
+@decorator_from_middleware(AdminCheckMiddleware)
+def paidUsers(request):
+    try:
+        paidusers = ManualDeposit.objects.filter(settled=False)
+    except ManualDeposit.DoesNotExist:
+        paidusers=''
+    context = {
+        'paidusers':paidusers
+    }
+
+    return render(request, 'site_admin/account/deposit.html', context)
+
+
+@decorator_from_middleware(AdminCheckMiddleware)
+def payUser(request, pk):
+    user = get_object_or_404(ManualDeposit, id=pk)
+    wallet = get_object_or_404(Wallet, user=user.user)
+    print('user: ', user.user)
+    print('wallet: ', wallet)
+    Deposit.objects.create(wallet=wallet, amount=user.amount, is_confirmed=True,
+    transaction_uid='manual deposit')
+    wallet.balance += user.amount
+    user.settled = True
+    wallet.save()
+    user.save()
+    print('done bitch')
+    return HttpResponseRedirect(reverse('myadmin:deposit'))
 
 @decorator_from_middleware(AdminCheckMiddleware)
 def dashboard(request):

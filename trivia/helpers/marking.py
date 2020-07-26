@@ -7,7 +7,7 @@ from trivia.models import Attempt
 class Marking:
     def credit_user(self, user=None):
         user_wallet = Wallet.objects.get(user=user.pk)
-        user_wallet.bonus_balance = F('bonus_balance') + 1000
+        user_wallet.bonus_balance = F('bonus_balance') + 200
         user_wallet.save(update_fields=('bonus_balance',))
 
     def __init__(self, question=None):

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from account.views import WithdrawalView, WalletView, wallet_details, Deposits, Withdrawals, VerifyPayment, BanksList, \
-    MakeWithdrawal, VerifyPassword, AuthorizationsList, ChargeAccount
+    MakeWithdrawal, VerifyPassword, AuthorizationsList, ManualDepositApi, ChargeAccount, manualDeposit
 from utilities.general_middleware import AuthCheckMiddleware
 from django.utils.decorators import decorator_from_middleware
 
@@ -21,4 +21,6 @@ urlpatterns = [
     path('api/password-check', VerifyPassword.as_view()),
     path('api/authorizations', AuthorizationsList.as_view()),
     path('api/charge', ChargeAccount.as_view()),
+    path('manual-deposit', manualDeposit.as_view(), name='manual-deposit'),
+    path('api/manualdepositapi', ManualDepositApi.as_view())
 ]

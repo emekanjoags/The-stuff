@@ -131,8 +131,9 @@
                                   :paystackkey="paystackkey"
                                   :callback="callback"
                                   :close="close"
-                                  :embed="false" v-if="!depositIssue">Make Payment
+                                  :embed="false" v-if="!depositIssue">Pay with Paystack
                         </paystack>
+                        <a href="manual-deposit" v-if="!depositIssue" class="btn btn-warning">Bank deposit</a>
                     </div>
                 </div>
 
@@ -211,7 +212,7 @@
                 this.is_loading = true;
 
                 axios.post('/account/api/charge', {...this.detailsForm}).then((resp) => {
-                    this.formMsg.success_message = 'Despot made successfully';
+                    this.formMsg.success_message = 'Deposit made successfully';
                     window.location.reload();
                 }).catch(err => {
                     this.is_loading = false;
@@ -226,7 +227,7 @@
                 this.deposit_amount = 0
                 axios.post('/account/payment/verify', {ref_id: response.trxref}).then((resp) => {
                     if (resp.data.status === 'success') {
-                        this.success_message = 'Despot made successfully'
+                        this.success_message = 'Deposit made successfully'
                         window.location.reload()
                     } else {
                         this.warning_message = `Transaction failed! If you think this is an issue then contact support with this reference id: ${resp.data.reference_id}`

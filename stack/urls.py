@@ -18,4 +18,5 @@ urlpatterns = [
     path('raffle-winners', RaffleWinnersView.as_view()),
     path('get-raffle-players', RafflePlayers.as_view()),
     path('get-raffle-winners', RaffleWinnersView.as_view()),
+    
 ]
