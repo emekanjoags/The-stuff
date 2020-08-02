@@ -81,6 +81,12 @@
                     <p>Manual Deposits</p>
                 </a>
             </li>
+            <li class="nav-item  {% if request.path == '/admin/survey' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'myadmin:survey' %}">
+                    <i class="fa fa-question-circle"></i>
+                    <p>Survey</p>
+                </a>
+            </li>
             <li class="nav-item ">
                 <a class="nav-link" href="{% url 'logoutPage' %}">
                     <i class="material-icons">exit_to_app</i>

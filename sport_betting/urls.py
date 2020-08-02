@@ -31,6 +31,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('support/', include('support.urls')),
     path('admin/', include('admin.urls')),
+    # path('', include('survey.urls')),
 
     # logged in users routes
     path('bets', user_auth_decorator(mybets_view), name='mybets'),

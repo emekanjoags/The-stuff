@@ -17,10 +17,20 @@
             </div>
         </div>
         <div class="card-form card-form-login">
-            <form class="rd-form" @submit.prevent="submitRequest" v-if="!show_password_view">
+            <form class="rd-form" @submit.prevent="submitRequest()" v-if="!show_password_view">
                 <div class="alert alert-info">
                     <strong>Be informed</strong> that any withdrawal below NGN 1,000 will incur a charge of NGN 50.
                 </div>
+
+
+                <div class="alert alert-warning" v-show="error_survey">
+                            {{ error_survey }}
+                </div>
+                <div class="alert alert-success" v-show="success_survey">
+                                {{ success_survey }}
+                </div>
+
+                
                 <div class="alert alert-warning" v-show="error_message">
                     {{ error_message }}
                 </div>
@@ -50,16 +60,26 @@
                     <input class="form-input" placeholder="Account Number" type="tel" v-model="wallet_details.account_number"
                            name="form-input" :readonly="!allow_edit">
                 </div>
+
+                <button v-if="survey_btn" class="button button-primary button-block d-flex justify-content-between" :data-target="modal" 
+                data-toggle="modal" type="button">
+                    <span>Submit</span>
+                </button>
+
+                
                 <button class="button button-primary button-block d-flex justify-content-between" type="submit"
-                        :disabled="is_loading">
+                        :disabled="is_loading" v-else>
                     <div class="__sport_preloader" v-if="is_loading">
                         <div class="preloader-body reduced">
                             <div class="preloader-item"></div>
                         </div>
                     </div>
-                    <span>Submit withdrawal request</span>
+                    <span>Withdraw</span>
                 </button>
+
             </form>
+           
+
             <form @submit.prevent="checkPassword" v-else>
                 <div class="alert alert-warning" v-show="password_error_message">
                     {{ password_error_message }}
@@ -82,7 +102,110 @@
                     <span>Validate Password</span>
                 </button>
             </form>
+
         </div>
+
+        <!-- surveyform -->
+            <div id="bio-data" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">This is a short survey to help us serve you better</h6>
+                            
+                        </div>
+                        
+                         
+                        <div class="modal-body">
+                            <form class="rd-form" @submit.prevent="submitSurvey()">
+                                <div class="form-wrap">
+                                    <label>Select Your gender</label>
+                                    <select v-model="survey.gender" class="form-input" :required="true" @change="finish">
+                                        <option value="male">Male</option>
+                                        <option value='female'>Female</option>
+                                        <option value='other'>other</option>
+                                    </select>
+                                </div>
+
+                                <div class='form-wrap'>
+                                    <label>May we know your age bracket?</label>
+                                    <select v-model="survey.age" class="form-input" :required="true" @change="finish">
+                                        <option value="18-25">18-25</option>
+                                        <option value="26-40">26-40</option>
+                                        <option value="41 and above">41 and above</option>
+                                    </select>
+                                </div>
+
+                                <div class='form-wrap'>
+                                    <label>Select your country of residence</label>
+                                    <select v-model="survey.country" class="form-input"  :required="true" @change="finish">
+                                        <option value="nigeria" selected>Nigeria</option>
+                                    </select>
+                                </div>
+                                <div class='form-wrap'>
+                                    <label>Select your state of residence</label>
+                                    <select v-model="survey.state" class="form-input" :required="true" @change="finish">
+                                        <option v-for="state in states" :value="state">{{state}}</option>
+
+                                    </select>
+                                </div>
+                                <div class='form-wrap'>
+                                    <label>How did you hear about us?</label>
+                                    <select v-model="survey.discovery" class="form-input" :required="true" @change="finish">
+                                        <option value="telegram">Telegram</option>
+                                        <option value="facebook">Facebook</option>
+                                        <option value="twitter">Twitter</option>
+                                        <option value="friend">From a friend</option>
+                                        <option value="other">other</option>
+
+                                    </select>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" :disabled="is_loading">Close
+                                    </button>
+                                    <button id="finish_btn" type="button" class="btn btn-success" data-dismiss='modal' :disabled="incomplete" @click="submitSurvey()">Finish
+                                    </button>
+                                    <p v-show="is_loading" style="color:#00ff00"><i>processing...</i></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+
+            
+        <!-- questionform -->
+            <div id="question" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h6 class="modal-title">This is a short survey to help us serve you better</h6>
+                            
+                        </div>
+                        
+                         
+                        <div class="modal-body">
+                            <form class="rd-form" @submit.prevent="submitAnswer()">
+                                <div class="form-wrap">
+                                    <label>{{question}}</label>
+                                    <input class="form-input" type="text" v-model="answer" v-on:keyup="question_finish()">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" :disabled="is_loading">Close
+                                    </button>
+                                    <button  id="second_finish_btn" type="button" class="btn btn-success" data-dismiss='modal' :disabled="incomplete" @click="submitAnswer()">Finish
+                                    </button>
+                                    <p v-show="is_loading" style="color:#00ff00"><i>processing...</i></p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
     </div>
 </template>
 
@@ -94,6 +217,59 @@
         props: ['balance'],
         data() {
             return {
+                states:[
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "FCT - Abuja",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara"
+],
+                survey:{
+                    gender:'',
+                    age:'',
+                    country:'',
+                    state:'',
+                    discovery:''
+                },
+                survey_btn:true,
+                success_survey:null,
+                error_survey:null,
+                incomplete:true,
+                answer:'',
+                modal: '#bio-data',
+                question:'',
                 password_loading: false,
                 show_password_view: false,
                 password: '',
@@ -125,6 +301,69 @@
             }
         },
         methods: {
+            finish(){
+                if(this.survey.gender!='' && this.survey.country!='' && this.survey.state1!='' && this.survey.age!='' && this.survey.discovery!=''){
+                    document.getElementById('finish_btn').style.opacity = '1'
+                    this.incomplete = false
+                }
+            },
+
+            question_finish(){
+                if (this.answer!=''){
+                    document.getElementById('second_finish_btn').style.opacity = '1'
+                    this.incomplete = false
+                }
+            },
+
+            submitAnswer(){
+                this.success_survey = ''
+                this.error_survey = ''
+                this.loading = true
+                axios.post('/account/api/question', {
+                    answer:this.answer,
+                    question:this.question
+                })
+                .then(resp=>{
+                    this.loading = false
+                    this.survey_btn = false
+                    this.success_survey = resp.data.response
+                    this.error.survey = ''
+                })
+                .catch(err=>{
+                    if(err.response){
+                        this.is_loading = false
+                        this.error_survey ='Something went wrong, check your internet connection and try again.'
+                    }
+                    
+                })
+            },
+
+            submitSurvey(){
+                this.success_survey = ''
+                this.error_survey = ''
+                this.loading = true
+                axios.post('/account/api/survey', {
+                    gender:this.survey.gender,
+                    age:this.survey.age,
+                    country:this.survey.country,
+                    state:this.survey.state,
+                    discovery:this.survey.discovery
+                })
+                .then(resp=>{
+                    this.loading = false
+                    this.survey_btn = false
+                    this.success_survey = resp.data.response
+                    this.error.survey = ''
+                    
+                })
+                .catch(err=>{
+                    if(err.response){
+                        this.loading = false
+                        this.error_survey ='Something went wrong, check your internet connection and try again.'
+                        this.success.survey = ''
+                    }
+                })
+            },
             passwordVisibilityToggle(){
                 this.password_stat = !this.password_stat;
                 showPassword('login-password')
@@ -202,11 +441,35 @@
                     this.amount_error = `This amount has exceeded your available balance of NGN ${this.balance}, please try a lesser amount.`
                 }
 
+            },
+            getSurvey(){
+                axios.get('/account/api/survey')
+                .then(resp=>{
+                    if(resp.data.response=='true'){
+                        this.modal = "#question"
+                    }
+                })
+                .catch(err=>{
+                    console.log('error')
+                    console.log('error: ' + err)
+                })
+            },
+            getQuestion(){
+                axios.get('/account/api/question')
+                .then(resp=>{
+                    if(resp.data.response=='true'){
+                        this.survey_btn = false
+                    }
+                    this.question = resp.data.question
+                })
             }
         },
         created() {
+            this.getSurvey()
+            this.getQuestion()
             this.getBanks()
             this.getWalletDetails()
+            
         },
         computed: {
             amountInKobo() {
@@ -220,5 +483,11 @@
 </script>
 
 <style scoped>
+#finish_btn{
+    opacity:0.5
+}
+#second_finish_btn{
+    opacity:0.5
+}
 
 </style>

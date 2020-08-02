@@ -4,6 +4,7 @@ from account.views import WithdrawalView, WalletView, wallet_details, Deposits, 
     MakeWithdrawal, VerifyPassword, AuthorizationsList, ManualDepositApi, ChargeAccount, manualDeposit
 from utilities.general_middleware import AuthCheckMiddleware
 from django.utils.decorators import decorator_from_middleware
+from survey.views import BioDataDisplay, QuestionDisplay
 
 app_name = 'account'
 
@@ -22,5 +23,7 @@ urlpatterns = [
     path('api/authorizations', AuthorizationsList.as_view()),
     path('api/charge', ChargeAccount.as_view()),
     path('manual-deposit', manualDeposit.as_view(), name='manual-deposit'),
-    path('api/manualdepositapi', ManualDepositApi.as_view())
+    path('api/manualdepositapi', ManualDepositApi.as_view()),
+    path('api/survey', BioDataDisplay.as_view()),
+    path('api/question', QuestionDisplay.as_view())
 ]

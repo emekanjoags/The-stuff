@@ -197,9 +197,12 @@ class BanksList(APIView):
     def get(self, request):
         transaction = Transaction()
         response = transaction.banks()
+        print('responsee: ', response)
 
         if response[0]:
             return Response(data=response[3], status=status.HTTP_200_OK)
+        else:
+            print('error with banks')
 
         return Response(data=[],
                         status=status.HTTP_200_OK)

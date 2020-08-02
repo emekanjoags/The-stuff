@@ -7,7 +7,8 @@ from random import randint
 
 from django.db.models import F
 from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 from django.utils import dateparse, timezone
 from django.views import View
 from rest_framework import permissions, status, generics
@@ -21,7 +22,7 @@ from stack.stock_helpers import StockHelper
 from users.models import User
 from utilities.raffle_id import RaffleIdGenerator
 from utilities.slip_token import SlipTokenGenerator
-from stack.models import Event, ActiveGame, Match, Slip, Game, Team, RafflePlayer, RaffleWinners, WeekEndRaffle
+from stack.models import Event, ActiveGame, Match, Slip, Game, Team, RafflePlayer, RaffleWinners, WeekEndRaffle, BonusButton, GiveBonus
 from account.models import Wallet
 from utilities.helper import LargeResultsSetPagination, Mailer
 from .stackSerializers import EventSerializer, GamesSerializer, MatchSerializer, UserGamesSerializer, \
@@ -220,7 +221,7 @@ class PlayTodayGames(APIView):
                     referral.save(update_fields=('is_settled',))
 
                     referrer_wallet = Wallet.objects.get(user=referral.referrer.pk)
-                    referrer_wallet.bonus_balance = F('bonus_balance') + 100
+                    referrer_wallet.bonus_balance = F('bonus_balance') + 50
                     referrer_wallet.save(update_fields=('bonus_balance',))
 
                     # mailing = Mailer()
@@ -400,13 +401,43 @@ def mybets_view(request):
     num_bets = Slip.objects.filter(jackpot_check=False, user=request.user.pk, played_at__gte=sunday_date).count()
     remaining_bets = 5 - num_bets
     raffle_id = ''
+    bonus_btn= ''
     if num_bets >= 5:
+          
         try:
             raffle_id = RafflePlayer.objects.get(user=request.user.pk, raffle__ended=False).raffle_hash
         except RafflePlayer.DoesNotExist:
             raffle_id = ''
-    return render(request, 'bets/mybets.html',
-                  {'num_bets': num_bets, 'raffle_id': raffle_id, 'remaining_bets': remaining_bets})
+        try:
+            bonus_btn = BonusButton.objects.get(user=request.user, active=True )
+        except BonusButton.DoesNotExist:
+            bonus_btn = ''
+
+    context = {
+        'num_bets': num_bets,
+        'raffle_id': raffle_id,
+        'remaining_bets': remaining_bets,
+        'bonus_btn':bonus_btn
+        }
+
+    if request.method == "POST":
+        weekend_raffle =  WeekEndRaffle.objects.get(is_active=True)
+        bonus = request.POST['Bonus']
+        raffle = request.POST['raffle']
+        if bonus:
+            GiveBonus.objects.create(user=request.user, raffle=weekend_raffle)
+            bonus_btn.active = False
+            bonus_btn.save(update_fields=('active'))
+            wallet = Wallet.objects.get(user=request.user)
+            wallet.bonus_balance = F('bonus_balance') + 100
+            wallet.save(update_fields=('bonus_balance'))
+            messages.success(request, 'Your bonus account has been credited' )
+            return redirect('/bets')
+        elif raffle:
+            messages.success(request, 'You have been automatically entered into the weekend draw' )
+            return redirect('/bets')
+            
+    return render(request, 'bets/mybets.html', context)
 
 
 class BetSlips(APIView):

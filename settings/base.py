@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'support',
     'referral',
     'trivia',
+    'survey',
 
     #s3 config apps
     'storages'
@@ -213,26 +214,18 @@ EMAIL_SUBJECT_PREFIX = "[Topsport]"
 # Crispy forms
 CRISPY_TEMPLATE_PACK = env('TEMPLATE_PACK', default="bootstrap4")
 
-#smtp configuration
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_TLS = env('MAIL_USE_TLS')
-# EMAIL_HOST = env('MAIL_HOST')
-# EMAIL_HOST_USER = env('MAIL_USER')
-# EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
-# EMAIL_PORT = env('MAIL_PORT')
-
-#smtp configuration
+# smtp configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'njoagwuanidavid@gmail.com'
-EMAIL_HOST_PASSWORD = 'pastorchris'
+EMAIL_USE_TLS = env('MAIL_USE_TLS')
+EMAIL_HOST = env('MAIL_HOST')
+EMAIL_HOST_USER = env('MAIL_USER')
+EMAIL_HOST_PASSWORD = env('MAIL_PASSWORD')
+EMAIL_PORT = env('MAIL_PORT')
 
 
 # #AWS S3 CONFIG
-# AWS_ACCESS_KEY_ID = 'AKIAREJUIHRDJQAXPQSP'
-# AWS_SECRET_ACCESS_KEY = '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'
+# AWS_ACCESS_KEY_ID = 
+# AWS_SECRET_ACCESS_KEY = 
 # AWS_STORAGE_BUCKET_NAME = 'topsport-test-bucket'
 # AWS_S3_FILE_OVERWRITE = False
 # AWS_DEFAULT_ACL = None

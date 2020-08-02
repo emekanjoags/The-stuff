@@ -235,7 +235,8 @@
 
                             <div class="slip-issues" v-if="is_active || betIssues || submissionError">
                                 <div v-if="is_active">Game in sessions</div>
-                                <div v-else-if="betIssues">{{betIssues}}</div>
+                                <div v-else-if="betIssues">{{betIssues}} <br><button v-if="show_login_btn" type='button'
+                                class="btn btn-warning" v-on:click="sign_in">Login</button></div>
                                 <div v-else-if="submissionError">{{submissionError}}</div>
                             </div>
                         </div>
@@ -288,6 +289,7 @@
                 submissionError: '',
                 success_msg: '',
                 error_msg: '',
+                show_login_btn: true
             }
         },
         components: {
@@ -316,7 +318,8 @@
                             return "Your balance is not enough for your selection. Please modify your selection or deposit to your account.";
                         }
                     } else {
-                        return "You must be logged in to place a bet.";
+                        this.show_login_btn = true
+                        return "You must be logged in to play a game.";
                     }
                 }
             },
@@ -331,6 +334,11 @@
             window.removeEventListener('resize', this.handleResize)
         },
         methods: {
+
+            sign_in(){
+                window.location = '/login'
+                this.show_login_btn = false;
+            },
             eventTime(time) {
                 time = DateTime.fromISO(time).setZone("Africa/Lagos").toFormat("hh ' : ' mm ' 'a'");
                 return time;

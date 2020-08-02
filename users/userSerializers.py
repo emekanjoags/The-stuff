@@ -32,6 +32,7 @@ class AdminCreateUserSerializer(serializers.ModelSerializer):
         username = attrs.get("username")
         phone = attrs.get("phone")
         email = attrs.get("email")
+        print('i reach userserializers')
 
         if User.objects.filter(username=username):
             raise serializers.ValidationError("Username already in use.")

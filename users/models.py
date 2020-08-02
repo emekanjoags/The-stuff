@@ -11,11 +11,13 @@ class UserManager(BaseUserManager):
     def _create_user(self, phone, calling_code, **extra_fields):
         user = self.model(phone=phone, calling_code=calling_code, **extra_fields)
         user.save(using=self._db)
+        print('they used _createUser')
         return user
 
     def create_user(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
+        print('lowe')
         return self._create_user(email, password.lowe(), **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):

@@ -28,7 +28,7 @@ helper_func = Helper()
 class UserProfileCreationSerializer(serializers.ModelSerializer):
     retype_password = serializers.CharField(required=False, allow_blank=False)
     referral_code = serializers.CharField(required=False, allow_blank=True)
-
+    print('inside userprofilecreation')
     class Meta(object):
         model = User
         exclude = ('calling_code',)
@@ -37,17 +37,22 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         password = cleaned_data.get('password').lower()
         retype_password = cleaned_data.get('retype_password').lower()
         referral_code = cleaned_data.get('referral_code').lower()
+        user = User.objects.get(phone=cleaned_data.get('phone'))
+        print('user" ',user)
 
         if len(password) < 6:
+            user.delete()
             raise serializers.ValidationError("Password must be at least 6 characters.")
 
         if not retype_password == password:
+            user.delete()
             raise serializers.ValidationError("Password and retype password does not match.")
 
         if referral_code and len(referral_code) > 0:
             try:
                 User.objects.get(referral_code=referral_code)
             except User.DoesNotExist:
+                user.delete()
                 raise serializers.ValidationError("Your referrer is not valid.")
 
         return cleaned_data
@@ -99,20 +104,21 @@ class UserProfileCreationSerializer(serializers.ModelSerializer):
         #         wallet.save(update_fields=('bonus_balance',))
 
         # send email to the user for successful registration
-        helpers.send_first_time_mail(instance.email, instance.username)
+        # helpers.send_first_time_mail(instance.email, instance.username)
 
         return instance
 
-
+#NOT NEEDED
 class RequestOtpSerializer(serializers.Serializer):
     # calling_code = serializers.IntegerField()
     phone = serializers.CharField(max_length=50)
 
-
+#VIEW IF WE ARE USING OTP
 class VerifyOTPSerializer(serializers.Serializer):
     # calling_code = serializers.IntegerField()
     phone = serializers.CharField(max_length=50)
     token = serializers.IntegerField(required=False)
+    print('verify otp serializer')
 
     def validate(self, cleaned_data):
         token = cleaned_data.get('token')
@@ -177,7 +183,7 @@ class CustomJWTSerializer(JSONWebTokenSerializer):
 
         if User.objects.filter(phone=phone, is_active=False):
             msg = {
-                "non_field_errors": "Sorry! This account has been blocked."}
+                "non_field_errors": "Sorry! This account has been blocked, contact our support team."}
 
         if User.objects.filter(phone=phone, is_deleted=True):
             msg = {

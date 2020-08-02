@@ -14,3 +14,4 @@ assets/uploads/sliders/*
 .vscode/
 topplayenv
 sport_bettingenv
+.env

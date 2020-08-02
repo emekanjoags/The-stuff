@@ -8,6 +8,7 @@ from .views import (dashboard, TeamsView, delete_team_view, EventsView, delete_e
                     remove_slider_image, UsersView, delete_slider_image, game_edit_view, GamesSetting, user_games_view,
                     user_bet_slip, change_user_status, support_view, SupportResponse, SendMessage, game_delete_view,
                     CreditUserAccount, QualifiedPlayers, paidUsers, payUser)
+from survey.views import adminSurvey, otherQuestions, bio_data
 
 admin_auth_decorator = decorator_from_middleware(AdminCheckMiddleware)
 app_name = 'myadmin'
@@ -42,5 +43,8 @@ urlpatterns = [
     path('users/credit-account', admin_auth_decorator(CreditUserAccount.as_view()), name='credit_user_account'),
     path('qualified-players', admin_auth_decorator(QualifiedPlayers.as_view()), name='qualified_players'),
     path('deposit', paidUsers, name="deposit"),
-    path('user/payuser/<int:pk>', admin_auth_decorator(payUser), name='pay-user')
+    path('user/payuser/<int:pk>', admin_auth_decorator(payUser), name='pay-user'),
+    path('survey', adminSurvey, name='survey'),
+    path('biodata', bio_data, name='biodata'),
+    path('other-questions/<int:pk>', otherQuestions, name='other-questions')
 ]

@@ -2,7 +2,7 @@
     <div class="card-login-register">
         <div class="card-top-panel">
             <div class="card-top-panel-left">
-                <h5 class="card-title card-title-login">Complete Profile Details</h5>
+                <h5 class="card-title card-title-login">User Registration</h5>
             </div>
         </div>
         <div class="card-form card-form-login">
@@ -10,6 +10,12 @@
                 <div class="alert alert-warning" v-show="non_field_errors">
                     {{ non_field_errors }}
                 </div>
+
+                 <div class="form-wrap">
+                    <input class="form-input" placeholder="Phone Number" type="text" v-model="formData.phone"
+                           name="form-input">
+                 </div>
+
                 <div class="form-wrap" :class="{'has-error':formErrors.username}">
                     <input class="form-input" placeholder="Username" type="text" v-model="formData.username"
                            name="form-input">
@@ -46,7 +52,7 @@
                             <div class="preloader-item"></div>
                         </div>
                     </div>
-                    <span>Save Details</span>
+                    <span>Register</span>
                 </button>
             </form>
         </div>
@@ -56,7 +62,6 @@
 <script>
 
     export default {
-        props: ['user_data'],
         data() {
             return {
                 non_field_errors: '',
@@ -66,7 +71,7 @@
                     password: '',
                     retype_password: '',
                     email: '',
-                    phone: this.user_data.phone,
+                    phone: '',
                     referral_code: ''
                 },
                 is_loading: false,
@@ -85,14 +90,14 @@
             },
             submitDetails: function () {
                 this.is_loading = true;
-                axios.post('/users/profile-completion', this.formData)
+                axios.post('/users/new-user', this.formData)
                     .then((resp) => {
                         this.is_loading = false;
-                        window.location = this.user_data.is_staff ? '/admin' : '/'
+                        window.location = resp.data.is_staff? '/admin' : '/'
                     })
                     .catch((err) => {
                         this.is_loading = false;
-                        console.log('th error '+ err)
+                        console.log('the error - '+ err)
                         if(err.response.data.non_field_errors){
                             this.non_field_errors = err.response.data.non_field_errors instanceof Array ? err.response.data.non_field_errors[0] : err.response.data.non_field_errors
                         }else{

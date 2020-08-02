@@ -6,7 +6,7 @@ from utilities.raffle_id import RaffleIdGenerator
 from utilities.random_choices import ChoiceRandomization
 from utilities.slip_token import SlipTokenGenerator
 from account.models import Wallet, Withdrawal
-from stack.models import ActiveGame, Match, Slip, Game, RafflePlayer, WeekEndRaffle, RaffleWinners
+from stack.models import ActiveGame, Match, Slip, Game, RafflePlayer, WeekEndRaffle, RaffleWinners, GiveBonus, BonusButton
 from users.models import User
 from utilities.helper import WinnersSort, Mailer
 from utilities.mailing import  Mailer
@@ -281,19 +281,27 @@ class UpdateApi:
                             user = User.objects.get(pk=selection['user'])
                             raffle_check = RafflePlayer.objects.filter(
                                 user=user, raffle=raffle.pk)
+                            bonus_check = GiveBonus.objects.filter(user=user,
+                             raffle=raffle.pk)
                             # check_slip_won = Slip.objects.filter(played_at__gte=sunday_date, user=user.pk, game_fate=1)
+                            if not raffle_check and bonus_check:
+                                print('raffle was checked and button created')
+                                bonus_button = BonusButton.objects.create(user=user)
+                                #call function to ask user to pick
                             if not raffle_check:
-                                user_raffle = RafflePlayer.objects.create(user=user, raffle_hash=raffle_id,
+                                if bonus_button.active == False and bonus_check:
+                                    user_raffle = RafflePlayer.objects.create(user=user, raffle_hash=raffle_id,
                                                                           raffle=raffle)
-                                if not user.is_moderator:
-                                    wallet = Wallet.objects.get(user=user.pk)
-                                    wallet.bonus_balance = F(
-                                        'bonus_balance') + 200
-                                    wallet.save()
+                                    bonus_button.delete()
+                                # if not user.is_moderator:
+                                #     wallet = Wallet.objects.get(user=user.pk)
+                                #     wallet.bonus_balance = F(
+                                #         'bonus_balance') + 100
+                                #     wallet.save()
                                     
                                 #mail here
-                                mailer = Mailer()
-                                mailer.send_raffle_player(user, raffle_id)
+                                # mailer = Mailer()
+                                # mailer.send_raffle_player(user, raffle_id)
 
     def end_raffle_draw(self):
         week_day = timezone.now().weekday()

@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import UserCompleteProfileApiView, RequestOTPView, ResendOTP, UsersView, VerifyOTP, UserLoginView, \
-    CreateUserView, UploadGravatar, UpdatePassword
+    CreateUserView, UploadGravatar, UpdatePassword, NewUserReg
 from rest_framework_jwt.views import ObtainJSONWebToken
 
 from .authSerializers import CustomJWTSerializer
@@ -17,4 +17,5 @@ urlpatterns = [
     path('session-login', UserLoginView.as_view(), name='login_session'),
     path('create', CreateUserView.as_view(), name='create_user'),
     path('upload-image-url', UploadGravatar.as_view()),
+    path('new-user', NewUserReg.as_view(), name='new-user'),
 ]

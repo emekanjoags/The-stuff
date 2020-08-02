@@ -32,6 +32,7 @@ Vue.component('raffle-winners', require('./components/raffle/raffle-winners.vue'
 Vue.component('create-trivia-match', require('./components/trivia/create_match').default);
 Vue.component('new-trivia', require('./components/onetime-trivia').default);
 
+
 const app = new Vue({
     el: '#app'
 });

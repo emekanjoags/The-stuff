@@ -28,7 +28,22 @@
                         <div class="alert alert-warning">
                             Play {{ remaining_bets }} more slips to get  a guaranteed NGN100 bonus instantly and a chance to win NGN1,000 cash in the free weekend giveaway
                         </div>
+                        <div class='card-form'>
+                            <form method="POST" action="">
+                                {%csrf_token%}
+                                <p><span style="color:#ff0000">Congratulations</span>, you have played up to 5 slips this week, please select how you want to be rewarded:</p>
+                                <p><b>Bonus:</b> if you select this option you get &#8358;100 in your bonus account instantly&nbsp;<input type="submit" value='Bonus' class="btn btn-outline-success" name='bonus'></p> 
+                                <p><b>Raffle:</b> if you select this option you will automatically enter into the weekend draw. <a href="/how-to-play" style="color:cornflowerblue">Learn more</a>
+                                    &nbsp;<input type="submit" value='Raffle' class='btn btn-outline-success' name='raffle'></p><br>
+                                
+                                
+                            </form>
+                        </div>
                     {% else %}
+                    
+                            
+                        
+                        
                         {% if raffle_id %}
                             <div class="alert alert-success">
                                 You have have qualified for the free weekend giveaway. Your raffle id is

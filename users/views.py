@@ -15,8 +15,7 @@ from django.views import View
 
 from users.forms import ForgotResetForm, ForgotPasswordForm
 from users.models import User
-from .authSerializers import RequestOtpSerializer, UserProfileCreationSerializer, VerifyOTPSerializer, \
-    UserLoginSerializer
+from .authSerializers import RequestOtpSerializer, UserProfileCreationSerializer, VerifyOTPSerializer, UserLoginSerializer
 from .userSerializers import UserListSerializers, AdminCreateUserSerializer
 from utilities.helper import Helper, LargeResultsSetPagination
 from utilities.account import password_reset_link, password_reset_token
@@ -28,6 +27,40 @@ jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER
 
 
+
+class NewUserReg(APIView):
+    permission_classes = (permissions.AllowAny,)
+    print('top place')
+
+    def post(self, request, *args, **kwargs):
+        user_data = request.data
+        print('data: ', user_data)
+        if User.objects.filter(phone=user_data['phone']):
+            user = User.objects.get(phone=request.data['phone'])
+            print('user exists')
+            if user.email or user.username:
+                return Response(data={'non_field_errors': 'A user with this phone number already exist.'},
+                           status=status.HTTP_400_BAD_REQUEST)
+        else:
+            user = User.objects.create(phone=user_data['phone'])
+            print('created user')
+
+        serializer = UserProfileCreationSerializer(user, data=user_data)
+        serializer.is_valid(raise_exception=True)
+
+         #this then goes through the userprofilecreationserializer
+        serializer.save()
+        login(request, user)
+        payload = jwt_payload_handler(user)
+        return Response(data={
+            'is_staff': user.is_staff,
+            'token': jwt_encode_handler(payload)
+        }, status=status.HTTP_200_OK)
+
+
+
+
+#NOT NEEDED
 class UserCompleteProfileApiView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -55,7 +88,7 @@ class UserCompleteProfileApiView(APIView):
             'token': jwt_encode_handler(payload)
         }, status=status.HTTP_200_OK)
 
-
+#not needed
 class RequestOTPView(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = RequestOtpSerializer
@@ -74,6 +107,7 @@ class RequestOTPView(APIView):
         #                               via='sms')
 
         user = User.objects.create(phone=serializer.data['phone'])
+        print('i was used to create')
 
         user_data = {
             'phone': user.phone,
@@ -89,7 +123,7 @@ class RequestOTPView(APIView):
             status=status.HTTP_200_OK
         )
 
-
+#NOT NEEDED
 class ResendOTP(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = RequestOtpSerializer
@@ -97,6 +131,7 @@ class ResendOTP(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        print(' see resendotp was important')
 
         if User.objects.filter(phone=serializer.validated_data['phone'], is_active=True):
             return Response(data={'non_field_errors': 'Sorry! This account has already been verified.'},
@@ -110,7 +145,7 @@ class ResendOTP(APIView):
             status=status.HTTP_200_OK
         )
 
-
+#NOT NEEDED
 class VerifyOTP(APIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = VerifyOTPSerializer

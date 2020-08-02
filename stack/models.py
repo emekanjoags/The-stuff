@@ -142,4 +142,16 @@ class RaffleWinners(models.Model):
     user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE, related_name='raffle_winner')
     created_at = models.DateTimeField(auto_now_add=True)
 
+class GiveBonus(models.Model):
+    user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE)
+    raffle = models.ForeignKey(WeekEndRaffle, on_delete=models.CASCADE)
+    used = models.BooleanField(default=False, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+class BonusButton(models.Model):
+    user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE)
+    active = models.BooleanField(default=True, null=True)
+
 

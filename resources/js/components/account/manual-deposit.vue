@@ -39,6 +39,7 @@
         <div  class="card-form card-form-login" v-show='check'>
             <p style='color:#ff0000'>Ensure you have made payment before clicking this button!</p><br>
             <input :disabled='is_loading' type='submit' class="btn btn-success mt-6" value="Payment Complete">
+            <p v-show="is_loading" style="color:#00ff00"><i>processing...</i></p>
         </div>
         </form>
 
@@ -69,6 +70,7 @@ export default {
             }
         },
         manualPayment(){
+            this.is_loading = true
             axios.post('/account/api/manualdepositapi',{
                 sender:this.info.fullName,
                 amount:this.info.amount,
@@ -80,8 +82,9 @@ export default {
             .catch(err=>{
                 console.log(err)
                 this.error_message = 'Something went wrong, ensure you have good internet connection and try again'
+                this.is_loading = false
             })
-            this.is_loading = true
+            
         }
     },
     

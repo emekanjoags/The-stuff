@@ -6,7 +6,7 @@ from django.utils.html import format_html
 
 from account.models import Wallet
 from users.models import User
-from .models import ActiveGame, Game, Slip, Event, Match, WeekEndRaffle, RafflePlayer, RaffleWinners
+from .models import ActiveGame, Game, Slip, Event, Match, WeekEndRaffle, RafflePlayer, RaffleWinners, GiveBonus, BonusButton
 
 
 class SlipAdmin(admin.ModelAdmin):
@@ -125,3 +125,5 @@ admin.site.register(Match, MatchAdmin)
 admin.site.register(WeekEndRaffle, WeekEndJackpotAdmin)
 admin.site.register(RafflePlayer)
 admin.site.register(RaffleWinners, RaffleWinnersAdmin)
+admin.site.register(GiveBonus)
+admin.site.register(BonusButton)

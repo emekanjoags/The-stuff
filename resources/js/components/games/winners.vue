@@ -66,12 +66,27 @@
                             </tr>
                             </tbody>
                         </table>
+                        <div v-show="current_user">
+                             <a class='float'>
+                                <div class="pt-2 social-icons my-float" style="display:flex;">
+                                                <a style="margin-left:5px" href="https://www.facebook.com/sharer/sharer.php?u=http://topsport.com/bets/winners" target="_blank" class="facebook"><span class="fa fa-facebook"></span></a>
+                                                <a style="margin-left:5px" href="https://twitter.com/share?url=http://topsport.com/bets/winners" class="twitter"><span class="fa fa-twitter"></span></a>
+                                                <a style="margin-left:5px" href="#" class="whatsapp" id="whatsapp" data-text="I won on topsport, check out my rank on the prestigious winners chart" data-link="http://topplaysport.com/bets/winners"><span class="fa fa-whatsapp"></span></a>
+                                </div>
+                            </a> 
+                            <div class="label-container">
+                                <div class="label-text">Share this chart</div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
+         
     </div>
 </template>
+                
 
 <script>
     import {DateTime} from "luxon";
@@ -84,7 +99,8 @@
                 active_date: '',
                 today_date: '',
                 is_loading: true,
-                winners_date: ''
+                winners_date: '',
+                current_user:''
             }
         },
         methods: {
@@ -113,6 +129,15 @@
                         this.winners = resp.data;
                         this.winners_date = (this.winners.length)?DateTime.fromISO(this.winners[0].played_at).setZone("Africa/Lagos").toFormat("yyyy'-'LL'-'dd"):'';
                         this.is_loading = false;
+                        //code for show share button
+                        this.winners.forEach(winner=>{                        
+                         if(this.user_id==winner.user.id){
+                             this.current_user = winner.user.username
+                             console.log(this.current_user)
+                             
+                         }
+                        })
+
                     }).catch((err) => console.log(err))
             }
         },
@@ -123,10 +148,54 @@
             this.active_date = '';
             this.today_date = d.getFullYear() + '-' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + ("0" + d.getDate()).slice(-2);
             this.getWinners()
+            
         }
     }
 </script>
 
 <style scoped>
+.label-container{
+	position:fixed;
+	bottom:48px;
+	right:105px;
+	display:table;
+	visibility: hidden;
+}
+
+.label-text{
+	color:#FFF;
+	background:rgba(51,51,51,0.5);
+	display:table-cell;
+	vertical-align:middle;
+	padding:10px;
+	border-radius:3px;
+}
+
+.float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:80px;
+	color:#FFF;
+	text-align:center;
+	
+}
+
+.my-float{
+	font-size:24px;
+	margin-top:18px;
+}
+
+a.float + div.label-container {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s ease;
+}
+
+a.float:hover + div.label-container{
+  visibility: visible;
+  opacity: 1;
+}
 
 </style>
