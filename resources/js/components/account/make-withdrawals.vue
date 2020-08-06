@@ -206,6 +206,7 @@
                 
                 
             </div>
+            <!--end of question form-->
     </div>
 </template>
 

@@ -23,39 +23,88 @@
         <div class="container">
             <div class="row row-50">
                 <div class="col-xl-12">
+                    {% if messages %}
+                    {% for message in messages %}
+                        <div {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %}>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
+                            <span>
+                                    {{ message }}
+                                </span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
 
                     {% if num_bets < 5 %}
                         <div class="alert alert-warning">
-                            Play {{ remaining_bets }} more slips to get  a guaranteed NGN100 bonus instantly and a chance to win NGN1,000 cash in the free weekend giveaway
-                        </div>
-                        <div class='card-form'>
-                            <form method="POST" action="">
-                                {%csrf_token%}
-                                <p><span style="color:#ff0000">Congratulations</span>, you have played up to 5 slips this week, please select how you want to be rewarded:</p>
-                                <p><b>Bonus:</b> if you select this option you get &#8358;100 in your bonus account instantly&nbsp;<input type="submit" value='Bonus' class="btn btn-outline-success" name='bonus'></p> 
-                                <p><b>Raffle:</b> if you select this option you will automatically enter into the weekend draw. <a href="/how-to-play" style="color:cornflowerblue">Learn more</a>
-                                    &nbsp;<input type="submit" value='Raffle' class='btn btn-outline-success' name='raffle'></p><br>
-                                
-                                
-                            </form>
+                            Play {{ remaining_bets }} more slips to get either a NGN100 bonus instantly or a chance to win NGN1,000 cash in the free weekend raffle
                         </div>
                     {% else %}
-                    
-                            
-                        
-                        
-                        {% if raffle_id %}
-                            <div class="alert alert-success">
-                                You have have qualified for the free weekend giveaway. Your raffle id is
-                                <strong>{{ raffle_id }}</strong> you have also been credited with NG100 bonus
+                        {%if bonus_btn > 2 %}
+                            <div class='card-form'>
+                                <p style="font-weight:bold;"><span style="color:#ff0000">Congratulations</span>, you have played up to 5 slips this week, click this button to select how you want to be rewarded:</p>
+                                <button class="btn btn-warning btn-lg" data-target="#choice" 
+                                data-toggle="modal" type="button">
+                                    <span>Click</span>
+                                </button>
                             </div>
-                        {% else %}
-                            <div class="alert alert-success">
-                                You have have qualified for the weekend raffle draw. Your raffle id will be made known
-                                to you soon.
-                            </div>
-                        {% endif %}
+                        {%else%}
+
+
+                            {% if raffle_id %}
+                                <div class="alert alert-success">
+                                    Your weekend raffle draw id is
+                                    <strong>{{ raffle_id }}</strong> <br><a href="/how-to-play" style="color:cornflowerblue">Learn more</a>
+                                </div>
+                            {% else %}
+                                <!-- <div class="alert alert-success">
+                                    You have have qualified for the weekend raffle draw. Your raffle id will be made known
+                                    to you soon.
+                                </div> -->
+                            {% endif %}
+                        {%endif%}
                     {% endif %}
+                     
+                    <!--choice modal box-->
+                    <div id="choice" class="modal fade" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title">Please select one out of the two options</h6> 
+                                </div>
+                                
+                                 
+                                <div class="modal-body">
+                                    <div class='card-form'>
+                                        <form method="POST" action="">
+                                            {%csrf_token%}
+                                            <h6>NOTE:</h6>
+                                            <ul>
+                                            <li><p>1. if you select the <b>BONUS</b>  option you get &#8358;100 in your bonus account instantly.</p></li> 
+                                            <li><p>2. if you select the <b>RAFFLE</b>  option you will automatically enter into the weekend draw. <a href="/how-to-play" style="color:cornflowerblue">Learn more</a></li>
+                                            </p>
+                                            </ul><br>
+
+                                            
+                                             <label>Bonus:</label><input type="radio" value='Bonus' name='choice'>&nbsp;
+                                            
+
+                                            
+                                                <label>Raffle:</label><input type="radio" value='Raffle' name='choice'>
+                                            
+                                                <br><br><input type="submit" class='btn btn-outline-success' value="submit">
+                                            
+                                            
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    <!--end of choice modal box-->
 
                 </div>
             </div>

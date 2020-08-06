@@ -4,7 +4,6 @@ from utilities.helper import Helper
 
 class RaffleIdGenerator:
     token = ''
-
     def __init__(self):
         self.token = self._token_check()
 

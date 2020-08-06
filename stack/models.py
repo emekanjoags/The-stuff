@@ -133,6 +133,7 @@ class RafflePlayer(models.Model):
     raffle_hash = models.CharField(max_length=20, null=True, db_index=True)
     raffle = models.ForeignKey(WeekEndRaffle, on_delete=models.CASCADE)
     should_win = models.BooleanField(default=True)
+    get_bonus = models.IntegerField(default=0, null=True) #0=BUTTON HAS NOT BEEN ALTERED, 1=USER TOOK BONUS, 2=USER TOOK RAFFLE, 3=USER HAS NOT ENTERED RAFFLE DRAW,
 
     def __str__(self):
         return f'{self.raffle.ended_at} - {self.raffle.pk} By {self.user.username}'
@@ -144,7 +145,7 @@ class RaffleWinners(models.Model):
 
 class GiveBonus(models.Model):
     user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE)
-    raffle = models.ForeignKey(WeekEndRaffle, on_delete=models.CASCADE)
+    raffledraw = models.ForeignKey(WeekEndRaffle, on_delete=models.CASCADE)
     used = models.BooleanField(default=False, null=True)
 
     def __str__(self):
@@ -152,6 +153,6 @@ class GiveBonus(models.Model):
 
 class BonusButton(models.Model):
     user = models.ForeignKey(RafflePlayer, on_delete=models.CASCADE)
-    active = models.BooleanField(default=True, null=True)
+    active = models.IntegerField(default=0, null=True) #0=BUTTON HAS NOT BEEN ALTERED, 1=USER TOOK BONUS, 2=USER TOOK RAFFLE, 3=USER HAS NOT SELELCTED,
 
 

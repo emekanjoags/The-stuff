@@ -176,7 +176,7 @@ class UpdateApi:
                                         update_fields=('balance',))
 
                                     #mail here
-                                    mailer.send_winning_msg(user_slip.user)
+                                    # mailer.send_winning_msg(user_slip.user)
 
                         elif space_available > 0 and len(group) > space_available and amount_available > 1:
                             # print("SPACE TWO: {}".format(group[0]['score']))
@@ -207,7 +207,7 @@ class UpdateApi:
                                         update_fields=('balance',))
 
                                     #mail here
-                                    mailer.send_winning_msg(user_slip.user)
+                                    # mailer.send_winning_msg(user_slip.user)
 
                     # mailer = Mailer()
                     # # mailer.send_my_mail(amount_used)
@@ -216,7 +216,9 @@ class UpdateApi:
                         pk=self.today_game().pk)
                     active_game.space = space_available
                     active_game.amount_available = amount_available
+                    print('number of winners:', no_winners)
                     active_game.winners = F('winners') + no_winners
+                    print('winners were added')
                     active_game.decision = True
                     active_game.save(update_fields=(
                         'space', 'amount_available', 'winners', 'decision',))
@@ -240,7 +242,7 @@ class UpdateApi:
                 timezone.datetime(today.year, today.month, today.day, 20, 5, 0,
                                   0)):
                 return False
-
+        #THIS WILL GET ALL SLIPS PLAYED BFORE THE LAST SUNDAY, AND HAVE NOT ENTERED JACKPOT AND
         slips = Slip.objects.filter(played_at__gte=sunday_date, is_special=False,
                                     jackpot_check=False).values('id', 'user', 'slip_token', 'score', 'game_fate',
                                                                 'amount_won')
@@ -250,12 +252,14 @@ class UpdateApi:
 
         if slips.count():
             for slip in slips:
-                #  check if there is any raffle for this week or start one if none
+                #  check if there is any raffle for this week or start one if none IIRESPECTIVE OF WHETHER THE USER HAS QUALIFIED
                 try:
                     raffle = WeekEndRaffle.objects.get(is_active=True)
                 except WeekEndRaffle.DoesNotExist:
                     raffle = WeekEndRaffle.objects.create(is_active=True)
+                # print('weekend raffle was created or get')
 
+                #THIS CHECKS WHETHER THAT SLIP HAS BEEN ENTERED INTO THE RAFFLE
                 if not RafflePlayer.objects.filter(user=slip['user'], raffle=raffle.pk).count():
                     # check if the user has played upto 5 games that week
                     if slips.filter(user=slip['user']).count() >= 5:
@@ -274,31 +278,42 @@ class UpdateApi:
                         for group in map:
                             selections.append(group[0])
 
-                        # print("SELECTIONS: {}".format(selections))
-
+                        
                         for selection in selections:
                             raffle_id = RaffleIdGenerator().token
                             user = User.objects.get(pk=selection['user'])
                             raffle_check = RafflePlayer.objects.filter(
                                 user=user, raffle=raffle.pk)
-                            bonus_check = GiveBonus.objects.filter(user=user,
-                             raffle=raffle.pk)
+                            
+                            # print(raffle_check)
+
                             # check_slip_won = Slip.objects.filter(played_at__gte=sunday_date, user=user.pk, game_fate=1)
-                            if not raffle_check and bonus_check:
-                                print('raffle was checked and button created')
-                                bonus_button = BonusButton.objects.create(user=user)
-                                #call function to ask user to pick
-                            if not raffle_check:
-                                if bonus_button.active == False and bonus_check:
-                                    user_raffle = RafflePlayer.objects.create(user=user, raffle_hash=raffle_id,
-                                                                          raffle=raffle)
-                                    bonus_button.delete()
-                                # if not user.is_moderator:
-                                #     wallet = Wallet.objects.get(user=user.pk)
-                                #     wallet.bonus_balance = F(
-                                #         'bonus_balance') + 100
-                                #     wallet.save()
-                                    
+
+                            #THIS WILL ONLY RUN IF USER HAS NOT RECEIVED BONUS AND HASNT ENTERED RAFFLE
+                            if not raffle_check:                            
+                                user_raffle = RafflePlayer.objects.create(user=user,
+                                                                      raffle=raffle, raffle_hash=raffle_id)
+                                
+                                #ALL THE ABOVE CODE WILL ONLY RUN IF THE RAFFLE EBJECT FOR TAHT WEEK HAS NOT BEEN CREATED
+                                # THE USER IS CREATED AND GIVEN A RAFFLE HASH BUT THE USER WILL NOT ENETER THE RAFFLE UNTIL THE USER HAS CHOSEN
+
+                            #THE NEXT LINE WILL DETERMINE WHAT THE USER CHOSE AND WILL ONLY BE RAN ONCE THE RAFFLE OBJECT HAS BEEN CREATED
+                            # try:
+                            #     print(' ientered the try block')
+                            #     raffle_btn = RafflePlayer.objects.get(user=user, get_bonus=2, raffle=raffle,) #if user clicked to get raffle
+                            #     print('trying to get peepz that chose raffle')
+                            # except Exception:
+                            #     raffle_btn = 0
+                            #     print('there was an exception')
+                            # if raffle_btn:
+                            #     print('this guy cjose rafle')
+                            #     enter_draw = RafflePlayer.objects.get(user=user, raffle=raffle, get_bonus=2)
+                            #     print('he chose raffel')
+                            #     enter_draw.raffle_hash = raffle_id
+                            #     print('raffke: ', raffle_id)
+                            #     enter_draw.get_bonus = 3
+                            #     enter_draw.save
+
                                 #mail here
                                 # mailer = Mailer()
                                 # mailer.send_raffle_player(user, raffle_id)
@@ -319,7 +334,7 @@ class UpdateApi:
                     return False
 
                 # players = RafflePlayer.objects.filter(raffle_id=raffle.pk, should_win=False)
-                players = RafflePlayer.objects.filter(raffle=raffle.pk)
+                players = RafflePlayer.objects.filter(raffle=raffle.pk, get_bonus=3)
 
                 Slip.objects.filter(jackpot_check=False).update(
                     jackpot_check=True)
@@ -340,7 +355,7 @@ class UpdateApi:
                 for mod_user in mod_users:
                     raffle_id = RaffleIdGenerator().token
                     player = RafflePlayer.objects.create(
-                        user=mod_user, raffle_hash=raffle_id, raffle=raffle)
+                        user=mod_user, raffle_hash=raffle_id, raffle=raffle, get_bonus=3)
                     moderators.append(player)
 
                 if len(moderators) < topplay_limit:
@@ -377,8 +392,8 @@ class UpdateApi:
                     if not selection.user.is_moderator:
                         user = User.objects.get(selection.user.pk)
                         #mail here
-                        mailer = Mailer()
-                        mailer.send_raffle_winner(user)
+                        # mailer = Mailer()
+                        # mailer.send_raffle_winner(user)
                         user_wallet = Wallet.objects.get(user=user.pk)
                         user_wallet.balance = F('balance') + 1000
                         user_wallet.save(update_fields=('balance',))

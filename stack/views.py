@@ -399,19 +399,29 @@ def mybets_view(request):
     sunday_date = timezone.make_aware(
         timezone.datetime(sunday_date.year, sunday_date.month, sunday_date.day, 20, 5, 0, 0))
     num_bets = Slip.objects.filter(jackpot_check=False, user=request.user.pk, played_at__gte=sunday_date).count()
+    print('num of slips till now is: ',num_bets)
     remaining_bets = 5 - num_bets
     raffle_id = ''
     bonus_btn= ''
     if num_bets >= 5:
+
+        try:
+            bonus_btn = RafflePlayer.objects.get(user=request.user, raffle__ended=False) #CHECK IF USER HAS AN RAFFLE OBJECT THAT WEEK
+            print('dont know y')
+            if bonus_btn.get_bonus == 0: # IF USER HAS NOT SELECTED ANY OPTION
+                bonus_btn = 3 #MAKE BTN VISIBLE
+                print('its 3')
+            else:
+                bonus_btn = 0
+                print('its zero')
+        except RafflePlayer.DoesNotExist:
+            bonus_btn = 0
           
         try:
-            raffle_id = RafflePlayer.objects.get(user=request.user.pk, raffle__ended=False).raffle_hash
+            raffle_id = RafflePlayer.objects.get(user=request.user.pk, raffle__ended=False, get_bonus=3).raffle_hash #THIS WILL HAPEEN WEHEN THE USER HAS CHOSEN RAFFLE
         except RafflePlayer.DoesNotExist:
             raffle_id = ''
-        try:
-            bonus_btn = BonusButton.objects.get(user=request.user, active=True )
-        except BonusButton.DoesNotExist:
-            bonus_btn = ''
+        
 
     context = {
         'num_bets': num_bets,
@@ -422,18 +432,27 @@ def mybets_view(request):
 
     if request.method == "POST":
         weekend_raffle =  WeekEndRaffle.objects.get(is_active=True)
-        bonus = request.POST['Bonus']
-        raffle = request.POST['raffle']
-        if bonus:
-            GiveBonus.objects.create(user=request.user, raffle=weekend_raffle)
-            bonus_btn.active = False
-            bonus_btn.save(update_fields=('active'))
+        try:
+            choice = request.POST['choice']
+        except KeyError:
+            messages.error(request, 'You did not select any option!')
+            return redirect('/bets')
+        
+        if choice == 'Bonus':
+            user_get_bonus = RafflePlayer.objects.get(user=request.user,raffle__ended=False,)
+            user_get_bonus.get_bonus = 1
+            user_get_bonus.save()
+            print('raffle bonus')
             wallet = Wallet.objects.get(user=request.user)
             wallet.bonus_balance = F('bonus_balance') + 100
-            wallet.save(update_fields=('bonus_balance'))
+            wallet.save()
             messages.success(request, 'Your bonus account has been credited' )
             return redirect('/bets')
-        elif raffle:
+        elif choice == 'Raffle':
+            user_get_raffle = RafflePlayer.objects.get(user=request.user,raffle__ended=False,)
+            user_get_raffle.get_bonus = 3
+            user_get_raffle.save()
+            print('raffle raffle')
             messages.success(request, 'You have been automatically entered into the weekend draw' )
             return redirect('/bets')
             

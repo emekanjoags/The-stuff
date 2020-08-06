@@ -40,15 +40,12 @@ def paidUsers(request):
 def payUser(request, pk):
     user = get_object_or_404(ManualDeposit, id=pk)
     wallet = get_object_or_404(Wallet, user=user.user)
-    print('user: ', user.user)
-    print('wallet: ', wallet)
     Deposit.objects.create(wallet=wallet, amount=user.amount, is_confirmed=True,
     transaction_uid='manual deposit')
     wallet.balance += user.amount
     user.settled = True
     wallet.save()
     user.save()
-    print('done bitch')
     return HttpResponseRedirect(reverse('myadmin:deposit'))
 
 @decorator_from_middleware(AdminCheckMiddleware)
@@ -430,6 +427,7 @@ class SendMessage(View):
 
 
 class CreditUserAccount(View):
+
     def get(self, request):
         return redirect('/admin/users')
 
@@ -462,7 +460,30 @@ class QualifiedPlayers(View):
         try:
             raffle = WeekEndRaffle.objects.get(is_active=True)
             players = RafflePlayer.objects.filter(raffle=raffle.pk)
+            qualified = players.count()
+            players = RafflePlayer.objects.filter(raffle=raffle.pk, get_bonus=3)
+            player_no = players.count()
         except WeekEndRaffle.DoesNotExist:
             players = []
+            player_no = ''
+            qualified = ''
+        context = {
+            'players': players,
+            'qualified':qualified,
+            'player_no':player_no
+            }
+        return render(request, 'site_admin/qualified_players.html', context)
 
-        return render(request, 'site_admin/qualified_players.html', {'players': players})
+class BonusGetters(View):
+    def get(self, request):
+        try:
+            raffle = WeekEndRaffle.objects.get(is_active=True)
+            players = RafflePlayer.objects.filter(raffle=raffle.pk, get_bonus=1)
+            player_no = players.count()
+        except WeekEndRaffle.DoesNotExist:
+            players = []
+            player_no = ''
+
+        return render(request, 'site_admin/bonus-getters.html', {'players': players, 'player_no':player_no})
+
+

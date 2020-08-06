@@ -69,9 +69,13 @@
                         <div v-show="current_user">
                              <a class='float'>
                                 <div class="pt-2 social-icons my-float" style="display:flex;">
-                                                <a style="margin-left:5px" href="https://www.facebook.com/sharer/sharer.php?u=http://topsport.com/bets/winners" target="_blank" class="facebook"><span class="fa fa-facebook"></span></a>
+                                                <a style="margin-left:5px" href="https://t.me/share/url?url=http://topsport.com/bets/winners" target="_blank" class="twitter"><span class="fa fa-telegram"></span></a>
+                                                
                                                 <a style="margin-left:5px" href="https://twitter.com/share?url=http://topsport.com/bets/winners" class="twitter"><span class="fa fa-twitter"></span></a>
-                                                <a style="margin-left:5px" href="#" class="whatsapp" id="whatsapp" data-text="I won on topsport, check out my rank on the prestigious winners chart" data-link="http://topplaysport.com/bets/winners"><span class="fa fa-whatsapp"></span></a>
+                                                <!-- <a style="margin-left:5px" href="#" class="whatsapp" id="whatsapp" data-text="I won on topsport, check out my rank on the prestigious winners chart" data-link="http://topplaysport.com/bets/winners">
+                                                <span class="fa fa-whatsapp"></span></a> -->
+                                                <a style="margin-right:5px" class="whatsapp" id="whatsapp"  href="whatsapp://send?text=https://topsport.com/bets/winners" data-action="share/whatsapp/share">
+                                                <span class="fa fa-whatsapp"></span></a>
                                 </div>
                             </a> 
                             <div class="label-container">
